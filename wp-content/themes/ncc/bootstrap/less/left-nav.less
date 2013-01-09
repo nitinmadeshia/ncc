@@ -1,0 +1,109 @@
+
+.left-list
+{
+  display: none;
+  .transition(height 2s);
+}
+
+.left-nav
+{
+  width:191px;
+  height:40px;
+  background: @black;
+  font-size: 12px;//@baseFontSize;
+  line-height: @baseLineHeight+3;
+  margin-top: 2px;
+}
+
+.left-nav:hover
+{
+ background: @navbarBackground;
+ .left-list
+ {
+   
+   //height: 35px;
+   display: block;
+   margin-left: 204px;
+   margin-top: -31px;
+   text-decoration: none;
+   position:relative;
+   z-index: 1;
+ }
+} 
+
+.nav >li > a:hover
+{
+  background:@navbarBackground ;
+}
+
+.nav > li> a
+{
+  color: @white;
+}
+
+.nav li + .nav-header
+{
+  margin-top: 2px;
+}
+
+
+.img-thumbnail
+{
+  margin-right:4px;
+  margin-top: 9px;
+  //width: 20px;
+  float:left;
+}
+
+.list-item
+{
+  margin-left: 0px !important;
+  width:176px;
+  display: inline-block;
+  margin-top: 9px;
+  //float: left;
+  //vertical-align: center;
+}
+
+.list-hover-link {
+  height: 40px;
+  color: @white;
+ &:hover {
+   background:@navbarBackground;
+ }
+}
+
+.list-on-hover
+{
+  height: 20px;
+  width: 217px;
+  background: @black;
+ 
+  //text-align: center;
+
+  /*
+  &>a
+  {
+    color: @white;
+    line-height:@baseLineHeight+5;
+    font-size: 12px; //@baseFontSize;
+    float: left;
+    margin-top: 6px;
+    margin-left: 18px;
+  }
+  &:hover
+  {
+    background: @navbarBackground;
+  }*/
+}
+
+.nav-header
+{
+  text-shadow: transparent 0 0 0;
+}
+
+.nav-list > li > a,
+.nav-list .nav-header
+{
+  text-shadow: transparent 0 0 0;
+}
