@@ -1,14 +1,15 @@
 <?php
-function changerole($table_name,$user_id,$active)
+function changerole($column_name,$user_id,$state)
 {
 	global $wpdb;
 	$row=$wpdb->get_row("SELECT * FROM `cms_register` WHERE `user_id`=".$user_id);
 	$c_old=$row->contractorsregistration;
 	$m_old=$row->manufacturerregistration;
 	$s_old=$row->supplierregistration;
-	
-	$result=$wpdb->query("UPDATE cms_register SET " .$table_name. "=".$active."  where user_id=".$user_id);
-	$wpdb->update( $table_name, array('is_active' => '1'), array( 'user_id' => $user_id ) );
+	$table_name='cms_register';
+	$wpdb->update($table_name,array($column_name => $state),array('user_id' =>$user_id));
+	//$result=$wpdb->query("UPDATE cms_register SET " .$column_name. "=".$state."  where user_id=".$user_id);
+	echo 'state==='.$state;
 	$row=$wpdb->get_row("SELECT * FROM `cms_register` WHERE `user_id`=".$user_id);
 	//print_r($row);
 	$c=$row->contractorsregistration;

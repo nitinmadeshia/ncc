@@ -12,7 +12,7 @@ if(isset($_REQUEST['action'])&& isset($_REQUEST['user']) && ($_REQUEST['action']
 </tr>
 
 <?php
-$results=$wpdb->get_results("SELECT * FROM ".$table_name." WHERE status='New'");
+$results=$wpdb->get_results("SELECT * FROM ".$table_name." WHERE status='New' AND is_submitted='1'");
 		foreach ( $results as $result ) 
 		{
 			?>

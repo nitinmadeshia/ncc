@@ -69,7 +69,7 @@ if ($step==1) {
 					<label>Tel No (s)</label>
 				</td>
 				<td>
-					<input id="txtTelephoneNummber" name="txtTelephoneNummber" value="" type="text" size="30">
+					<input id="txtTelephoneNumber" name="txtTelephoneNumber" value="" type="text" size="30">
 				</td>
 			</tr>
 
@@ -122,7 +122,7 @@ if ($step==1) {
 					<label>Tel No (s)</label>
 				</td>
 				<td>
-					<input id="txtBOTelephoneNummber" name="txtBOTelephoneNummber" value="" type="text" size="30">
+					<input id="txtBOTelephoneNumber" name="txtBOTelephoneNumber" value="" type="text" size="30">
 				</td>
 			</tr>
 
@@ -241,7 +241,7 @@ if ($step==1) {
 
 			<tr>
 				<td>
-					<input type="hidden" value="<?php echo $step+1 ?>" name="step" />
+					<input type="hidden" value="<?php echo $step ?>" name="step" />
 				</td>
 				<td>
 				
@@ -310,7 +310,7 @@ if ($step==2) {
 
 			<tr>
 				<td>
-					<input type="hidden" value="<?php echo $step+1 ?>" name="step" />
+					<input type="hidden" value="<?php echo $step ?>" name="step" />
 				</td>
 				<td>
 					<input type="submit" value="Back" name="sectionBack" />
@@ -364,7 +364,7 @@ if ($step==3)
 
 			<tr>
 				<td>
-					<input type="hidden" value="<?php echo $step+1 ?>" name="step" />
+					<input type="hidden" value="<?php echo $step ?>" name="step" />
 				</td>
 				<td>
 					<input type="submit" value="Back" name="sectionBack" />
@@ -418,7 +418,7 @@ if ($step==4)
 
 			<tr>
 				<td>
-					<input type="hidden" value="<?php echo $step+1 ?>" name="step" />
+					<input type="hidden" value="<?php echo $step ?>" name="step" />
 				</td>
 				<td>
 					<input type="submit" value="Back" name="sectionBack" />

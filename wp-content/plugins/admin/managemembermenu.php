@@ -8,7 +8,7 @@
  License: GPL
  */
  add_action('admin_menu', 'manageMemberMenu');
- 
+add_action('admin_init','session_start'); 
  
 function manageMemberMenu()
 {

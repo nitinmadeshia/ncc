@@ -1,11 +1,16 @@
 <?php
-function maincategory()
+global $wpdb;
+$table='contractorsregistration';
+$user_id=get_current_user_id();
+function maincategory($formCategory)
 {
 	global $wpdb;
 	$category = array();
 	$parentCategory = $wpdb->get_results("SELECT * FROM grade where parent_code='0' AND  `is_delete` =  '0'");
 	
 ?>
+
+
 <select id="place_size" name="place_size">
 <?php
 		foreach ($parentCategory as $value){
@@ -15,7 +20,7 @@ function maincategory()
 			$subCategory = $wpdb->get_results('SELECT * FROM grade where parent_code = "'.$value->category_code.'" ') or die(mysql_error());
 			foreach ($subCategory as $value2) {
 ?>
-				<option value="<?php echo $value2->parent_code; ?>"><?php echo $value2->construction_activity; ?></option>
+				<option  <?php if($formCategory==$value2->id) echo 'selected="selected"'?> value="<?php echo $value2->id; ?>"><?php echo $value2->construction_activity; ?></option>
 <?php
 			}
 ?>
@@ -26,10 +31,13 @@ function maincategory()
 </select>
 <?php
 }
-
 function get_form_by_step($step=1)
 {
-if ($step==1) {
+	global $wpdb;
+	$user_id=get_current_user_id();
+	$result=$wpdb->get_row("SELECT * FROM `contractorsregistration` WHERE `user_id`=" .$user_id. " AND `is_submitted`=0");
+	if ($step==1) {
+			
 ?>
 
 <form name="Category of Application" id="categoryOfApplication" method="post" action="<?php echo $_REQUEST['REQUEST_URI']; ?>">
@@ -46,7 +54,7 @@ if ($step==1) {
 					</label>
 				</td>
 				<td>
-					<?php maincategory(); ?>
+					<?php maincategory($result->main_category); ?>
 				</td>
 			</tr>
 			<tr>
@@ -57,12 +65,12 @@ if ($step==1) {
 				<td>
 				<select style="width:185px" id="txtClassificationGrade" name="txtClassificationGrade">
 					
-					<option value="1" >1</option>
-					<option value="2" >2</option>
-					<option value="3" >3</option>
-					<option value="4" >4</option>
-					<option value="5" >5</option>
-					<option value="6" >6</option>
+					<option <?php if($result->classification_of_grade=='1') echo 'selected="selected"'?> value="1" >1</option>
+					<option <?php if($result->classification_of_grade=='2') echo 'selected="selected"'?> value="2" >2</option>
+					<option <?php if($result->classification_of_grade=='3') echo 'selected="selected"'?>value="3" >3</option>
+					<option <?php if($result->classification_of_grade=='4') echo 'selected="selected"'?> value="4" >4</option>
+					<option <?php if($result->classification_of_grade=='5') echo 'selected="selected"'?> value="5" >5</option>
+					<option <?php if($result->classification_of_grade=='6') echo 'selected="selected"'?> value="6" >6</option>
 
 				</select></td>
 			</tr>
@@ -82,7 +90,9 @@ if ($step==1) {
 <?php
 }
 if ($step==2) {
+	
 ?>
+
 <form name="Company Details" id="companyDetails" method="post" action="<?php echo $_REQUEST['REQUEST_URI']; ?>">
 	<table class="widefat">
 		<thead>
@@ -95,7 +105,7 @@ if ($step==2) {
 					<label >Company Name</label>
 				</td>
 				<td>
-					<input id="txtCompanyName" name="txtCompanyName" type="text" size="30" maxlength="255" value=""/>
+					<input id="txtCompanyName" name="txtCompanyName" type="text" size="30" maxlength="255" value="<?php echo $result->company_name; ?>"/>
 				</td>
 			</tr>
 
@@ -104,7 +114,7 @@ if ($step==2) {
 					<label>Trading Name</label>
 				</td>
 				<td>
-					<input id="txtTradingName" name="txtTradingName" type="text" size="30" maxlength="255" value=""/>
+					<input id="txtTradingName" name="txtTradingName" type="text" size="30" maxlength="255" value="<?php echo $result->trading_name; ?>"/>
 				</td>
 			</tr>
 
@@ -113,7 +123,7 @@ if ($step==2) {
 					<label>PACRA Registration No</label>
 				</td>
 				<td>
-					<input id="txtPRegistrationNo" name="txtPRegistrationNo" type="text" size="30" maxlength="255" value=""/>
+					<input id="txtPRegistrationNo" name="txtPRegistrationNo" type="text" size="30" maxlength="255" value="<?php echo $result->pacra_registration_number; ?>"/>
 				</td>
 			</tr>
 			
@@ -129,7 +139,7 @@ if ($step==2) {
 					<label>Physical</label>
 				</td>
 				<td>
-					<input id="txtPhysical" name="txtPhysical" value="" type="text" size="30">
+					<input id="txtPhysical" name="txtPhysical" value="<?php echo $result->physical_registered; ?>" type="text" size="30">
 				</td>
 
 			</tr>
@@ -139,7 +149,7 @@ if ($step==2) {
 					<label>Postal</label>
 				</td>
 				<td>
-					<input id="txtPostal" name="txtPostal" value="" type="text" size="30">
+					<input id="txtPostal" name="txtPostal" value="<?php echo $result->postal_registered; ?>" type="text" size="30">
 				</td>
 			</tr>
 
@@ -148,7 +158,7 @@ if ($step==2) {
 					<label>Tel No (s)</label>
 				</td>
 				<td>
-					<input id="txtTelephoneNummber" name="txtTelephoneNummber" value="" type="text" size="30">
+					<input id="txtTelephoneNumber" name="txtTelephoneNumber" value="<?php echo $result->telephone_no_registered; ?>" type="text" size="30">
 				</td>
 			</tr>
 
@@ -157,7 +167,7 @@ if ($step==2) {
 					<label>Fax No</label>
 				</td>
 				<td>
-					<input id="txtFaxNumber" name="txtFaxNumber" value="" type="text" size="30">
+					<input id="txtFaxNumber" name="txtFaxNumber" value="<?php echo $result->fax_no_registered; ?>" type="text" size="30">
 				</td>
 			</tr>
 
@@ -166,7 +176,7 @@ if ($step==2) {
 					<label>E-mail</label>
 				</td>
 				<td>
-					<input id="txtEmail" name="txtEmail" maxlength="15" value="" type="text" size="30">
+					<input id="txtEmail" name="txtEmail" maxlength="15" value="<?php echo $result->email_id_registered;?>" type="text" size="30">
 				</td>
 			</tr>
 
@@ -182,7 +192,7 @@ if ($step==2) {
 					<label>Physical</label>
 				</td>
 				<td>
-					<input id="txtBOPhysical" name="txtBOPhysical" value="" type="text" size="30">
+					<input id="txtBOPhysical" name="txtBOPhysical" value="<?php echo $result->physical_branch;?>" type="text" size="30">
 				</td>
 
 			</tr>
@@ -192,7 +202,7 @@ if ($step==2) {
 					<label>Postal</label>
 				</td>
 				<td>
-					<input id="txtBOPostal" name="txtBOPostal" value="" type="text" size="30">
+					<input id="txtBOPostal" name="txtBOPostal" value="<?php echo $result->postal_branch; ?>" type="text" size="30">
 				</td>
 			</tr>
 
@@ -201,7 +211,7 @@ if ($step==2) {
 					<label>Tel No (s)</label>
 				</td>
 				<td>
-					<input id="txtBOTelephoneNummber" name="txtBOTelephoneNummber" value="" type="text" size="30">
+					<input id="txtBOTelephoneNumber" name="txtBOTelephoneNumber" value="<?php echo $result->telephone_number_branch; ?>" type="text" size="30">
 				</td>
 			</tr>
 
@@ -210,7 +220,7 @@ if ($step==2) {
 					<label>Fax No</label>
 				</td>
 				<td>
-					<input id="txtBOFaxNumber" name="txtBOFaxNumber" value="" type="text" size="30">
+					<input id="txtBOFaxNumber" name="txtBOFaxNumber" value="<?php echo $result->fax_no_branch; ?>" type="text" size="30">
 				</td>
 			</tr>
 
@@ -219,7 +229,7 @@ if ($step==2) {
 					<label>E-mail</label>
 				</td>
 				<td>
-					<input id="txtBOEmail" name="txtBOEmail" maxlength="15" value="" type="text" size="30">
+					<input id="txtBOEmail" name="txtBOEmail" maxlength="15" value="<?php echo $result->email_id_branch; ?>" type="text" size="30">
 				</td>
 			</tr>
 
@@ -232,10 +242,10 @@ if ($step==2) {
 						
 				<td>
 					<select style="width:185px" id="txtCompanyType" name="txtCompanyType" >
-						<option value="1" >Listed Company</option>
-						<option value="2" >Limited Company</option>
-						<option value="3" >Partnership</option>
-						<option value="4" >Sole Proprietor</option>
+						<option <?php if($result->company_type=='Listed Company') echo 'selected="selected"'?> value="Listed Company" >Listed Company</option>
+						<option <?php if($result->company_type=='Limited Company') echo 'selected="selected"'?>value="Limited Company" >Limited Company</option>
+						<option <?php if($result->company_type=='Partnership') echo 'selected="selected"'?>value="Partnership" >Partnership</option>
+						<option <?php if($result->company_type=='ole Proprietor') echo 'selected="selected"'?>value="Sole Proprietor" >Sole Proprietor</option>
 
 					</select>
 				</td>
@@ -247,14 +257,14 @@ if ($step==2) {
 				</td>
 				
 				<td>
-					<select style="width:185px" id="txtStatus" name="txtStatus">
-						<option value="1" >Consultancy</option>
-						<option value="2" >Contracting</option>
-						<option value="3" >Architecture</option>
-						<option value="4" >Quantity Surveying</option>
-						<option value="5" >Training</option>
-						<option value="6" >Professional Body</option>
-						<option value="7" >Other (Please specify)</option>
+					<select style="width:185px" id="txtStatus" name="txtStatus" >
+						<option <?php if($result->business_description=='Consultancy') echo 'selected="selected"'?> value="Consultancy" >Consultancy</option>
+						<option  <?php if($result->business_description=='Contracting') echo 'selected="selected"'?>value="Contracting" >Contracting</option>
+						<option <?php if($result->business_description=='Architecture') echo 'selected="selected"'?>value="Architecture" >Architecture</option>
+						<option <?php if($result->business_description=='Quantity Surveying') echo 'selected="selected"'?>value="Quantity Surveying" >Quantity Surveying</option>
+						<option <?php if($result->business_description=='Training') echo 'selected="selected"'?>value="Training" >Training</option>
+						<option <?php if($result->business_description=='Professional Body') echo 'selected="selected"'?>value="Professional Body" >Professional Body</option>
+						<option <?php if($result->business_description=='other') echo 'selected="selected"'?>value="other" >Other (Please specify)</option>
 
 					</select>
 				</td>
@@ -272,7 +282,7 @@ if ($step==2) {
 					<label>Name</label>
 				</td>
 				<td>
-				<input id="txtSHPName" name="txtSHPName" type="text" size="30" maxlength="255" value=""/>
+				<input id="txtSHPName" name="txtSHPName" type="text" size="30" maxlength="255" value="<?php echo $result->shareholding_pattern_name; ?>" />
 				</td>
 			</tr>
 
@@ -283,7 +293,7 @@ if ($step==2) {
 				</td>
 				
 				<td>
-					<input id="txtSHPPosition" name="txtSHPPosition" maxlength="3" value="" type="text" size="30">
+					<input id="txtSHPPosition" name="txtSHPPosition" maxlength="3" value="<?php echo $result->shareholding_pattern_position ; ?>"  type="text" size="30">
 				</td>
 			</tr>
 			
@@ -292,7 +302,7 @@ if ($step==2) {
 					<label>Passport No. / NRC No.</label>
 				</td>
 				<td>
-					<input id="txtSHPPassportNumber" name="txtSHPPassportNumber" maxlength="45" value="" type="text" size="30">
+					<input id="txtSHPPassportNumber" name="txtSHPPassportNumber" maxlength="45" value="<?php echo $result->shareholding_pattern_passport_nrc_number ; ?>"  type="text" size="30">
 				</td>
 			</tr>
 			
@@ -302,9 +312,9 @@ if ($step==2) {
 				</td>
 				<td>
 					<select style="width:185px" id="txtSHPStatus" name="txtSHPStatus">
-						<option value="1" >Citizen</option>
-						<option value="2" >Resident</option>
-						<option value="3" >Non-Resident</option>
+						<option  <?php if($result->shareholding_pattern_status=='Citizen') echo 'selected="selected"'?>value="Citizen" >Citizen</option>
+						<option <?php if($result->shareholding_pattern_status=='Resident') echo 'selected="selected"'?>value="Resident" >Resident</option>
+						<option <?php if($result->shareholding_pattern_status=='Non-Resident') echo 'selected="selected"'?>value="Non-Resident" >Non-Resident</option>
 						
 					</select>
 				</td>
@@ -315,7 +325,7 @@ if ($step==2) {
 					<label>Shareholding %</label>
 				</td>
 				<td>
-				<input id="txtSHPShareholding" name="txtSHPShareholding" type="text" size="30" maxlength="255" value=""/>
+				<input id="txtSHPShareholding" name="txtSHPShareholding" type="text" size="30" maxlength="255" value="<?php echo $result->shareholding_pattern_percentage; ?>"/>
 				</td>
 	
 			<tr>
@@ -323,7 +333,7 @@ if ($step==2) {
 					<label>Qualification</label>
 				</td>
 				<td>
-					<input id="txtSHPQualification" name="txtSHPQualification" type="text" size="30" maxlength="255" value=""/>
+					<input id="txtSHPQualification" name="txtSHPQualification" type="text" size="30" maxlength="255" value="<?php echo $result->shareholding_pattern_qualification; ?>"/>
 				</td>
 			</tr>
 
@@ -332,7 +342,7 @@ if ($step==2) {
 					<label>Details of the firms Bankers</label>
 				</td>
 				<td>
-					<textarea style="width:250px; height: 100px" id="txtSHPDFBanker" name="txtSHPDFBanker" class="element textarea medium"></textarea>
+					<textarea style="width:250px; height: 100px" id="txtSHPDFBanker" name="txtSHPDFBanker" class="element textarea medium" ><?php echo $result->details_of_firms_bankers; ?></textarea>
 				</td>
 			</tr>
 			
@@ -376,7 +386,7 @@ if ($step==3) {
 					<label>Engineers:</label>
 				</td>
 				<td>
-					<input type="text" value="" name="txtKPPEngineers" id="txtKPPEngineers" size="30" />
+					<input type="text" value="<?php echo $result->p_engineer; ?>" name="txtKPPEngineers" id="txtKPPEngineers" size="30" />
 				</td>
 			</tr>
 
@@ -387,7 +397,7 @@ if ($step==3) {
 					<label>Architects:</label>
 				</td>
 				<td>
-					<input type="text" value="" name="txtKPPArchitects" id="txtKPPArchitects" size="30" />
+					<input type="text" value="<?php echo $result->p_architects;?>" name="txtKPPArchitects" id="txtKPPArchitects" size="30" />
 				</td>
 			</tr>
 			
@@ -398,7 +408,7 @@ if ($step==3) {
 					<label>Quantity Surveyors:</label>
 				</td>
 				<td>
-					<input type="text" value="" name="txtKPPQuantitySurveyors" id="txtKPPQuantitySurveyors" size="30" />
+					<input type="text" value="<?php echo $result->p_quantity_surveyors ;?>" name="txtKPPQuantitySurveyors" id="txtKPPQuantitySurveyors" size="30" />
 				</td>
 			</tr>
 			
@@ -409,7 +419,7 @@ if ($step==3) {
 					<label>Building Scientists:</label>
 				</td>
 				<td>
-					<input type="text" value="" name="txtKPPBuildingScientists" id="txtKPPBuildingScientists" size="30" />
+					<input type="text" value="<?php echo $result->p_buildings_scientistis ;?>" name="txtKPPBuildingScientists" id="txtKPPBuildingScientists" size="30" />
 				</td>
 			</tr>
 
@@ -420,7 +430,7 @@ if ($step==3) {
 					<label>Surveyors:</label>
 				</td>
 				<td>
-					<input type="text" value="" name="txtKPPSurveyors" id="txtKPPSurveyors" size="30" />
+					<input type="text" value="<?php echo $result->p_surveyors ;?>" name="txtKPPSurveyors" id="txtKPPSurveyors" size="30" />
 				</td>
 			</tr>
 
@@ -431,7 +441,7 @@ if ($step==3) {
 					<label>Accountants:</label>
 				</td>
 				<td>
-					<input type="text" value="" name="txtKPPAccountants" id="txtKPPAccountants" size="30" />
+					<input type="text" value="<?php echo $result->p_accountants ;?>" name="txtKPPAccountants" id="txtKPPAccountants" size="30" />
 				</td>
 			</tr>
 
@@ -442,7 +452,7 @@ if ($step==3) {
 					<label>Others (which an applicant should specify)</label>
 				</td>
 				<td>
-					<input type="text" value="" name="txtKPPOther" id="txtKPPOther" size="30" /><input type="text" value="" name="txtKPPOtherValue" id="txtKPPValue" size="30" />
+					<input type="text" value="<?php echo $result->professional_other ;?>" name="txtKPPOther" id="txtKPPOther" size="30" /><input type="text" value="<?php echo $result->professional_other_value;?>" name="txtKPPOtherValue" id="txtKPPValue" size="30" />
 				</td>
 			</tr>
 
@@ -462,7 +472,7 @@ if ($step==3) {
 					<label>Electricians:</label>
 				</td>
 				<td>
-					<input type="text" value="" name="txtKPTElectricians" id="txtKPTElectricians" size="30" />
+					<input type="text" value="<?php echo $result->t_electricians ; ?>" name="txtKPTElectricians" id="txtKPTElectricians" size="30" />
 				</td>
 			</tr>
 
@@ -473,7 +483,7 @@ if ($step==3) {
 					<label>Construction Technologist:</label>
 				</td>
 				<td>
-					<input type="text" value="" name="txtKPTCTechnologist" id="txtKPTCTechnologist" size="30" />
+					<input type="text" value="<?php echo $result->t_construction_technologist ; ?>" name="txtKPTCTechnologist" id="txtKPTCTechnologist" size="30" />
 				</td>
 			</tr>
 			
@@ -485,7 +495,7 @@ if ($step==3) {
 					<label>Others (which an applicant should specify)</label>
 				</td>
 				<td>
-					<input type="text" value="" name="txtKPTOther" id="txtKPTOther" size="30" /><input type="text" value="" name="txtKPTOtherValue" id="txtKPTValue" size="30" />
+					<input type="text" value="<?php echo $result->technicians_others ; ?>" name="txtKPTOther" id="txtKPTOther" size="30" /><input type="text" value="<?php echo $result->technicians_others_value ; ?>" name="txtKPTOtherValue" id="txtKPTValue" size="30" />
 				</td>
 			</tr>
 
@@ -505,7 +515,7 @@ if ($step==3) {
 					<label>Carpenters:</label>
 				</td>
 				<td>
-					<input type="text" value="" name="txtKPSBCarpenters" id="txtKPSBCarpenters" size="30" />
+					<input type="text" value="<?php echo $result->s_carpenters ;?>" name="txtKPSBCarpenters" id="txtKPSBCarpenters" size="30" />
 				</td>
 			</tr>
 
@@ -516,7 +526,7 @@ if ($step==3) {
 					<label>Steel Fixers:</label>
 				</td>
 				<td>
-					<input type="text" value="" name="txtKPSBSteelFixers" id="txtKPSBSteelFixers" size="30" />
+					<input type="text" value="<?php echo $result->s_steel_fixers ;?>" name="txtKPSBSteelFixers" id="txtKPSBSteelFixers" size="30" />
 				</td>
 			</tr>
 			
@@ -527,7 +537,7 @@ if ($step==3) {
 					<label>Plumbers:</label>
 				</td>
 				<td>
-					<input type="text" value="" name="txtKPSBPlumbers" id="txtKPSBPlumbers" size="30" />
+					<input type="text" value="<?php echo $result->s_plumbers ;?>" name="txtKPSBPlumbers" id="txtKPSBPlumbers" size="30" />
 				</td>
 			</tr>
 			
@@ -538,7 +548,7 @@ if ($step==3) {
 					<label>Brick Layers:</label>
 				</td>
 				<td>
-					<input type="text" value="" name="txtKPSBBrickLayers" id="txtKPSBBrick Layers" size="30" />
+					<input type="text" value="<?php echo $result->s_brick_layers ;?>" name="txtKPSBBrickLayers" id="txtKPSBBrick Layers" size="30" />
 				</td>
 			</tr>
 
@@ -549,7 +559,7 @@ if ($step==3) {
 					<label>Others (which an applicant should specify)</label>
 				</td>
 				<td>
-					<input type="text" value="" name="txtKPSBOther" id="txtKPSBOther" size="30" /><input type="text" value="" name="txtKPSBOtherValue" id="txtKPSBValue" size="30" />
+					<input type="text" value="<?php echo $result->skills_based_other ;?>" name="txtKPSBOther" id="txtKPSBOther" size="30" /><input type="text" value="<?php echo $result->skills_based_other_value;?>" name="txtKPSBOtherValue" id="txtKPSBValue" size="30" />
 				</td>
 			</tr>
 
@@ -594,12 +604,12 @@ if ($step==4)
 
 				<td>
 					<select style="width:185px" id="txtImmovableAssets" name="txtImmovableAssets">
-						<option value="1" > >K5 Billion and above</option>
-						<option value="2" > >2.5 Billion and above</option>
-						<option value="3" > >K1.0 Billion and above</option>
-						<option value="4" > >K0.5 Billion and above</option>
-						<option value="5" > >K0.1 Billion and above</option>
-						<option value="6" >  K50 Million and above</option>
+						<option <?php if($result->immovable_assets=='>K5 Billion and above') echo 'selected="selected"'?> value=">K5 Billion and above" > >K5 Billion and above</option>
+						<option <?php if($result->immovable_assets=='>2.5 Billion and above') echo 'selected="selected"'?> value=">2.5 Billion and above" > >2.5 Billion and above</option>
+						<option <?php if($result->immovable_assets=='>K1.0 Billion and above') echo 'selected="selected"'?> value=">K1.0 Billion and above" > >K1.0 Billion and above</option>
+						<option <?php if($result->immovable_assets=='>K0.5 Billion and above') echo 'selected="selected"'?> value=">K0.5 Billion and above" > >K0.5 Billion and above</option>
+						<option <?php if($result->immovable_assets=='>K0.1 Billion and above') echo 'selected="selected"'?> value=">K0.1 Billion and above" > >K0.1 Billion and above</option>
+						<option <?php if($result->immovable_assets=='K50 Million and above') echo 'selected="selected"'?> value="K50 Million and above" >  K50 Million and above</option>
 					</select>
 				</td>
 
@@ -623,12 +633,12 @@ if ($step==4)
 
 				<td>
 					<select style="width:185px" id="txtMovableAssets" name="txtMovableAssets">
-						<option value="1" > >K5 Billion and above</option>
-						<option value="2" > >2.5 Billion and above</option>
-						<option value="3" > >K1.0 Billion and above</option>
-						<option value="4" > >K0.5 Billion and above</option>
-						<option value="5" > >K0.1 Billion and above</option>
-						<option value="6" > >K50 Million and above</option>
+						<option <?php if($result->total_movable_assets=='>K5 Billion and above') echo 'selected="selected"'?> value=">K5 Billion and above" > >K5 Billion and above</option>
+						<option <?php if($result->total_movable_assets=='>2.5 Billion and above') echo 'selected="selected"'?> value=">2.5 Billion and above" > >2.5 Billion and above</option>
+						<option <?php if($result->total_movable_assets=='>K1.0 Billion and above') echo 'selected="selected"'?> value=">K1.0 Billion and above" > >K1.0 Billion and above</option>
+						<option <?php if($result->total_movable_assets=='>K0.5 Billion and above') echo 'selected="selected"'?> value=">K0.5 Billion and above" > >K0.5 Billion and above</option>
+						<option <?php if($result->total_movable_assets=='>K0.1 Billion and above') echo 'selected="selected"'?> value=">K0.1 Billion and above" > >K0.1 Billion and above</option>
+						<option <?php if($result->total_movable_assets=='K50 Million and above') echo 'selected="selected"'?> value="K50 Million and above" >  K50 Million and above</option>
 					</select>
 				</td>
 
@@ -644,11 +654,12 @@ if ($step==4)
 
 				<td>
 					<select style="width:185px" id="txtContractComplete" name="txtContractComplete">
-						<option value="1" > >K25 Billion and above</option>
-						<option value="2" >  K15 Billion and K25 Billion</option>
-						<option value="3" >  K10 Billion and K15 Billion</option>
-						<option value="4" >  K2 Billion and K10 Billion</option>
-						<option value="5" >  K1 Billion and 2 Billion</option>
+						<option <?php if($result->contracts_completed=='>K5 Billion and above') echo 'selected="selected"'?> value=">K5 Billion and above" > >K5 Billion and above</option>
+						<option <?php if($result->contracts_completed=='>2.5 Billion and above') echo 'selected="selected"'?> value=">2.5 Billion and above" > >2.5 Billion and above</option>
+						<option <?php if($result->contracts_completed=='>K1.0 Billion and above') echo 'selected="selected"'?> value=">K1.0 Billion and above" > >K1.0 Billion and above</option>
+						<option <?php if($result->contracts_completed=='>K0.5 Billion and above') echo 'selected="selected"'?> value=">K0.5 Billion and above" > >K0.5 Billion and above</option>
+						<option <?php if($result->contracts_completed=='>K0.1 Billion and above') echo 'selected="selected"'?> value=">K0.1 Billion and above" > >K0.1 Billion and above</option>
+						<option <?php if($result->contracts_completed=='K50 Million and above') echo 'selected="selected"'?> value="K50 Million and above" >  K50 Million and above</option>
 					
 					</select>
 				</td>
@@ -665,12 +676,12 @@ if ($step==4)
 
 				<td>
 					<select style="width:185px" id="txtCreditFacility" name="txtCreditFacility">
-						<option value="1" > >K5.0 Billion and above</option>
-						<option value="2" > >K3.0 Billion and above</option>
-						<option value="3" > >K1.5 Billion and above</option>
-						<option value="4" > >K0.75 Billion and above</option>
-						<option value="5" > >K75 Million and above</option>
-						<option value="6" >  K20 Million and above</option>
+						<option <?php if($result->credit_facility=='>K5 Billion and above') echo 'selected="selected"'?> value=">K5 Billion and above" > >K5 Billion and above</option>
+						<option <?php if($result->credit_facility=='>2.5 Billion and above') echo 'selected="selected"'?> value=">2.5 Billion and above" > >2.5 Billion and above</option>
+						<option <?php if($result->credit_facility=='>K1.0 Billion and above') echo 'selected="selected"'?> value=">K1.0 Billion and above" > >K1.0 Billion and above</option>
+						<option <?php if($result->credit_facility=='>K0.5 Billion and above') echo 'selected="selected"'?> value=">K0.5 Billion and above" > >K0.5 Billion and above</option>
+						<option <?php if($result->credit_facility=='>K0.1 Billion and above') echo 'selected="selected"'?> value=">K0.1 Billion and above" > >K0.1 Billion and above</option>
+						<option <?php if($result->credit_facility=='K50 Million and above') echo 'selected="selected"'?> value="K50 Million and above" >  K50 Million and above</option>
 					</select>
 				</td>
 
@@ -686,12 +697,12 @@ if ($step==4)
 
 				<td>
 					<select style="width:185px" id="txtContractHand" name="txtContractHand">
-						<option value="1" > >K5.0 Billion and above</option>
-						<option value="2" > >K3.0 Billion and above</option>
-						<option value="3" > >K1.5 Billion and above</option>
-						<option value="4" > >K0.75 Billion and above</option>
-						<option value="5" > >K75 Million and above</option>
-						<option value="6" >  K20 Million and above</option>
+						<option <?php if($result->contracts_on_hand=='>K5 Billion and above') echo 'selected="selected"'?> value=">K5 Billion and above" > >K5 Billion and above</option>
+						<option <?php if($result->contracts_on_hand=='>2.5 Billion and above') echo 'selected="selected"'?> value=">2.5 Billion and above" > >2.5 Billion and above</option>
+						<option <?php if($result->contracts_on_hand=='>K1.0 Billion and above') echo 'selected="selected"'?> value=">K1.0 Billion and above" > >K1.0 Billion and above</option>
+						<option <?php if($result->contracts_on_hand=='>K0.5 Billion and above') echo 'selected="selected"'?> value=">K0.5 Billion and above" > >K0.5 Billion and above</option>
+						<option <?php if($result->contracts_on_hand=='>K0.1 Billion and above') echo 'selected="selected"'?> value=">K0.1 Billion and above" > >K0.1 Billion and above</option>
+						<option <?php if($result->contracts_on_hand=='K50 Million and above') echo 'selected="selected"'?> value="K50 Million and above" >  K50 Million and above</option>
 					</select>
 				</td>
 

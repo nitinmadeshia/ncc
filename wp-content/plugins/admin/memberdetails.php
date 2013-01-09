@@ -9,7 +9,7 @@ $url = "/ncc/wp-admin/admin.php?page=".$_REQUEST['page']."&user=".$_REQUEST['use
 		?>
    <table border="2" class="widefat" >
    	<tr>
-        <th>ID</th>
+        <th>Application No.</th>
         <th>Activate/Deactivate</th>
         <th>Company Name </th>
         <th>View Details</th>
@@ -20,15 +20,17 @@ $url = "/ncc/wp-admin/admin.php?page=".$_REQUEST['page']."&user=".$_REQUEST['use
         <th>Send Notification</th>
    </tr>
     <?php
-	$results = $wpdb->get_results("SELECT * FROM ".$table_name." where status='Accept'");
+	$results = $wpdb->get_results("SELECT * FROM ".$table_name." where status='Accept' AND is_submitted=1");
 		foreach ( $results as $result ) 
 		{
         	$user_id=$result->user_id;
-			$active=$wpdb->get_var("SELECT ".$_REQUEST['user']." FROM cms_register where user_id=".$user_id);
+            $application_no=$result->application_no;
+            $active=$result->is_active;
+            echo $active;
 	?>
 			<tr>
-            <td><?php echo $user_id ?></td>
-            <td><input type="button" class="button" value="<?php if($active == 0) echo $is='Active';else echo $is='Deactive'; ?>"name="button" onClick="document.location='<?php echo $url; ?>&action=<?php echo $is ?>&userid=<?php echo $user_id; ?>'"></td>
+            <td><?php echo $application_no ?></td>
+            <td><input type="button" class="button" value="<?php if($active == 0) echo $is='Active';else echo $is='Deactive'; ?>"name="button" onClick="document.location='<?php echo $url; ?>&action=<?php echo $is ?>&userid=<?php echo $user_id; ?>&appno=<?php echo $application_no; ?>'"></td>
 			<td><?php echo $result->company_name; ?></td>
             <td><input type="button" class="button" value="View Details" name="button" onclick="document.location='<?php echo $url; ?>&action=viewdetails&appno=<?php echo $result->application_no; ?>'"></td>
             <td><input type="button" class="button" value="Delete" name="button" onclick="document.location='<?php echo $url; ?>&action=delete&userid=<?php echo $user_id; ?>'"></td>
